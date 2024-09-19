@@ -115,6 +115,10 @@ class EagerLoadPath implements IteratorAggregate
 
         $relation = $schema->relationship($name);
 
+        if (!$relation instanceof Relation) {
+            return null;
+        }
+
         if (!$relation->isIncludePath()) {
             throw new LogicException(sprintf(
                 'Unsupported include field %s at path %s.',
