@@ -96,19 +96,15 @@ class EagerLoadPathList implements IteratorAggregate
     /**
      * Get the first relationship.
      *
-     * @return Relation
+     * @return ?Relation
      */
-    private function relation(): Relation
+    private function relation(): ?Relation
     {
         $relation = $this->schema->relationship(
             $this->path->first()
         );
 
-        if ($relation instanceof Relation) {
-            return $relation;
-        }
-
-        throw new LogicException('Expecting an Eloquent relationship.');
+        return $relation instanceof Relation ? $relation : null;
     }
 
     /**
@@ -133,7 +129,8 @@ class EagerLoadPathList implements IteratorAggregate
      */
     private function compute(): array
     {
-        $paths = EagerLoadPath::make($this->relation());
+        $relation = $this->relation();
+        $paths = $relation instanceof Relation ? EagerLoadPath::make($relation) : [];
         $terminated = [];
 
         if ($path = $this->path->skip(1)) {
